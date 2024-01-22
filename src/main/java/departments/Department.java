@@ -6,7 +6,7 @@ import java.util.Collection;
 
 @Entity
 @Table(name = "DEPT", schema = "SCOTT", catalog = "")
-public class DeptEntity {
+public class Department {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "DEPTNO")
@@ -18,7 +18,7 @@ public class DeptEntity {
     @Column(name = "LOC")
     private String loc;
     @OneToMany(mappedBy = "deptByDeptno")
-    private Collection<EmpEntity> empsByDeptno;
+    private Collection<Employee> empsByDeptno;
 
     public byte getDeptno() {
         return deptno;
@@ -49,7 +49,7 @@ public class DeptEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        DeptEntity that = (DeptEntity) o;
+        Department that = (Department) o;
 
         if (deptno != that.deptno) return false;
         if (dname != null ? !dname.equals(that.dname) : that.dname != null) return false;
@@ -66,11 +66,21 @@ public class DeptEntity {
         return result;
     }
 
-    public Collection<EmpEntity> getEmpsByDeptno() {
+    public Collection<Employee> getEmpsByDeptno() {
         return empsByDeptno;
     }
 
-    public void setEmpsByDeptno(Collection<EmpEntity> empsByDeptno) {
+    public void setEmpsByDeptno(Collection<Employee> empsByDeptno) {
+
         this.empsByDeptno = empsByDeptno;
+    }
+
+    @Override
+    public String toString() {
+        return "DeptEntity{" +
+                "deptno=" + deptno +
+                ", dname='" + dname + '\'' +
+                ", loc='" + loc + '\'' +
+                '}';
     }
 }

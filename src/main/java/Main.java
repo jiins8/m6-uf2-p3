@@ -1,47 +1,32 @@
-import org.hibernate.HibernateException;
-import org.hibernate.Metamodel;
-import org.hibernate.query.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
 
-import javax.persistence.metamodel.EntityType;
-
-import java.util.Map;
+import departments.Department;
+import departments.Employee;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 
 public class Main {
-    private static final SessionFactory ourSessionFactory;
+    private static final EntityManagerFactory ourEntityManagerFactory;
 
     static {
         try {
-            Configuration configuration = new Configuration();
-            configuration.configure();
-
-            ourSessionFactory = configuration.buildSessionFactory();
+            ourEntityManagerFactory = Persistence.createEntityManagerFactory("default");
         } catch (Throwable ex) {
             throw new ExceptionInInitializerError(ex);
         }
     }
 
-    public static Session getSession() throws HibernateException {
-        return ourSessionFactory.openSession();
+    public static EntityManager getEntityManager() {
+        return ourEntityManagerFactory.createEntityManager();
     }
 
     public static void main(final String[] args) throws Exception {
-        final Session session = getSession();
-        try {
-            System.out.println("querying all the managed entities...");
-            final Metamodel metamodel = session.getSessionFactory().getMetamodel();
-            for (EntityType<?> entityType : metamodel.getEntities()) {
-                final String entityName = entityType.getName();
-                final Query query = session.createQuery("from " + entityName);
-                System.out.println("executing: " + query.getQueryString());
-                for (Object o : query.list()) {
-                    System.out.println("  " + o);
-                }
-            }
-        } finally {
-            session.close();
-        }
+        final EntityManager entityManager = getEntityManager();
+        System.out.println(entityManager.getProperties());
+        Department departament = entityManager.find(Department.class, "10");
+        System.out.println(departament);
+        Employee empleat = entityManager.find(Employee.class, "7788");
+        System.out.println(empleat);
+        entityManager.close();
     }
 }
